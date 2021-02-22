@@ -1,21 +1,55 @@
 <template>
-  <v-data-table
-    v-model="selected"
-    :headers="headers"
-    :items="Itens"
-    :single-select="singleSelect"
-    item-key="name"
-    show-select
-    class="elevation-1"
-  >
-    <template v-slot:top>
-      <v-switch
-        v-model="singleSelect"
-        label="Single select"
-        class="pa-3"
-      ></v-switch>
-    </template>
-  </v-data-table>
+  <!-- Tabela customizada -->
+  
+  <!-- elevation="8" -->
+  <v-sheet
+  rounded="true">
+    <v-container
+    >
+      <!-- Header -->
+      <v-row
+      >
+        <v-col>
+          <v-spacer></v-spacer>
+        </v-col>
+        <v-col
+        >
+          Name
+        </v-col>
+        <v-col
+        >
+          Preço
+        </v-col>
+        <v-col
+        >
+          Quantidade
+        </v-col>
+        <v-col
+        >
+          Estoque
+        </v-col>
+      </v-row>
+
+      <!-- Itens -->
+      <v-row>
+        <v-col>
+          image
+        </v-col>
+        <v-col>
+          Produtoname
+        </v-col>
+        <v-col>
+          Produtoprice
+        </v-col>
+        <v-col>
+          Produtoqtdincart
+        </v-col>
+        <v-col>
+          Produtoquantidade
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-sheet>
 </template>
 
 
@@ -28,19 +62,7 @@
 
     data () {
       return {
-        singleSelect: false,
-        selected: [],
-        headers: [
-          {
-            text: 'Nome',
-            align: 'start',
-            sortable: false,
-            value: 'name',
-          },
-          { text: 'Preço', value: 'price' },
-          { text: 'Moeda', value: 'moeda' },
-          { text: 'Quantidade', value: 'quantidade' },
-        ],
+        primary:'primary'
       }
     },
   }

@@ -12,7 +12,7 @@ export default new Vuex.Store({
     user: JSON.parse(localStorage.getItem('user')),
     admin: false,
     estoque: [],
-    cart: [],
+    cart: JSON.parse(localStorage.getItem('cart')),
   },
 
   mutations: {
@@ -29,10 +29,20 @@ export default new Vuex.Store({
 
     setEstoque (state, produtos) {
       state.estoque = produtos;
+      //instanciando um carrinho na memória como um array.
+      if (!state.cart) {
+        localStorage.setItem('cart', JSON.stringify(new Array()))
+      }
     },
 
     addCart (state, produto) {
-      state.cart.push(produto)
+      if(!state.cart[state.cart.findIndex(e => e.id == produto.id)]){
+        produto["qtdincart"] = 1;
+        state.cart.push(produto);
+      } else {
+        state.cart[state.cart.findIndex(e => e.id == produto.id)].qtdincart ++;
+      }
+
       localStorage.setItem('cart', JSON.stringify(state.cart))
     }
   },
