@@ -20,7 +20,7 @@
         justify="center"
         id="List">
             <List
-            :Itens="Cart"
+            :Cart="Cart"
             v-if="Cart.length > 0"></List>
 
             <v-alert
