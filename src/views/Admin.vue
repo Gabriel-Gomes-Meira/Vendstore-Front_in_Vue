@@ -24,6 +24,33 @@
 
                             <v-list-item link>
                                 <v-list-item-action>
+                                    <v-icon>mdi-bookmark-multiple</v-icon>
+                                </v-list-item-action>
+                            <v-list-item-content>
+                                <v-list-item-title>Marcas</v-list-item-title>
+                            </v-list-item-content>
+                            </v-list-item>
+
+                            <v-list-item link>
+                                <v-list-item-action>
+                                    <v-icon>mdi-bitcoin</v-icon>
+                                </v-list-item-action>
+                            <v-list-item-content>
+                                <v-list-item-title>Moedas</v-list-item-title>
+                            </v-list-item-content>
+                            </v-list-item>
+                            
+                            <v-list-item link>
+                                <v-list-item-action>
+                                    <v-icon>mdi-layers</v-icon>
+                                </v-list-item-action>
+                            <v-list-item-content>
+                                <v-list-item-title>Categorias</v-list-item-title>
+                            </v-list-item-content>
+                            </v-list-item>
+                            
+                            <v-list-item link>
+                                <v-list-item-action>
                                     <v-icon>mdi-cog</v-icon>
                                 </v-list-item-action>
                             <v-list-item-content>
@@ -58,6 +85,11 @@
                         @Re_render="Refresh"
                         :key="prodkey"
                         v-if="group == 0"></Produtos>
+
+                        <Marcas
+                        v-if="group == 1">
+                        </Marcas>
+                        
                 </v-main>
             
                 <v-footer app>
@@ -92,6 +124,7 @@
 import { mapGetters } from 'vuex'
 import login from './Login.vue';
 import Produtos from '../components/admin/Produtos.vue';
+import Marcas from '../components/admin/Marcas.vue'
 import NotFound from '../components/NotFound'
 
 export default {
@@ -99,6 +132,7 @@ export default {
     components: {
         login,
         Produtos,
+        Marcas,
         NotFound
     },
 

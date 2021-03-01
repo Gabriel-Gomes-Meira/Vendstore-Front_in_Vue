@@ -31,7 +31,6 @@
         </v-row>
 
         <v-row
-        
         id="ShowingProduto" >
             <v-col
             lg="3"
@@ -121,8 +120,8 @@
 
 <script>
 
-import UPForms from './UPForms.vue' 
-import DelForm from './DelForm'
+import UPForms from './Produtos/UPForms' 
+import DelForm from './Produtos/DelForm'
 import axios from 'axios'
 
 axios.defaults.baseURL = 'http://127.0.0.1:8000/api'
