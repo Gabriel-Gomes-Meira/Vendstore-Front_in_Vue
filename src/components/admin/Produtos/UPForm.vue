@@ -74,7 +74,7 @@
 <script>
 export default {
     mounted() {
-        if (!this.clean) {
+        if (this.Type == '/update') {
             this.Type = '/update'
             this.action = 'Atualizar'
                 this.Item.id = this.NewProduto.id
@@ -88,11 +88,10 @@ export default {
     props:{
         active:Boolean,
         NewProduto:null,
-        clean:false,
+        Type:'/create',
     },
     data () {
         return {
-            Type:'/create',
             witherror:false,
             action:'Cadastrar',
             Item: {

@@ -113,6 +113,7 @@ export default {
   },
   created() {
     this.$store.dispatch('GetEstoque');
+    this.$store.dispatch('GetMarcas');
   }
 
 

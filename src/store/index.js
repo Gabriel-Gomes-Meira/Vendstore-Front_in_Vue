@@ -12,6 +12,7 @@ export default new Vuex.Store({
     user: JSON.parse(localStorage.getItem('user')),
     admin: false,
     estoque: [],
+    marcas: [],
     cart: JSON.parse(localStorage.getItem('cart')),
   },
 
@@ -44,6 +45,10 @@ export default new Vuex.Store({
       }
 
       localStorage.setItem('cart', JSON.stringify(state.cart))
+    },
+
+    setMarcas (state, marcas) {
+      state.marcas = marcas.Marcas;
     }
   },
 
@@ -85,7 +90,14 @@ export default new Vuex.Store({
 
     AddToCart ({ commit }, item) {
       commit('addCart', item)
+    },
+
+    GetMarcas ({ commit }) {
+      axios.get('/auth/marcas').then(({ data }) => {
+        commit('setMarcas', data)
+      })
     }
+
   },
 
   getters : {

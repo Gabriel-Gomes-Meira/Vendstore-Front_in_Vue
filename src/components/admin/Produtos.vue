@@ -86,24 +86,24 @@
         </v-row>
         
         <!-- Formulario para inserção de Produto -->
-            <UPForms
+            <UPForm
             v-if="dialog1"
             :NewProduto="SelProduto"
             :active='dialog1'
-            :clean="true"
             @SendRequest="Empacotar"
             @Closethis="ClearDialogs"
-            ></UPForms>
+            ></UPForm>
         <!-- Fim Formulário para inserção -->
 
         <!-- Formulario para Atualização de Produto -->
-            <UPForms 
+            <UPForm 
             v-if="dialog2"
             :NewProduto="SelProduto"
             :active='dialog2'
+            :type="'/update'"
             @SendRequest="Empacotar"
             @Closethis="ClearDialogs"
-            ></UPForms>
+            ></UPForm>
         <!-- Fim Formulário para atualização -->
 
         <!-- Confirmação de Deleção do Produto -->
@@ -120,7 +120,7 @@
 
 <script>
 
-import UPForms from './Produtos/UPForms' 
+import UPForm from './Produtos/UPForm' 
 import DelForm from './Produtos/DelForm'
 import axios from 'axios'
 
@@ -130,7 +130,7 @@ axios.defaults.baseURL = 'http://127.0.0.1:8000/api'
 export default {
 
     components:{
-        UPForms,
+        UPForm,
         DelForm
     },
 

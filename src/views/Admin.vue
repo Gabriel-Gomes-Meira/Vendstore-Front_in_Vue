@@ -79,16 +79,45 @@
                     <v-toolbar-title >{{this.$store.state.user.user.name}}</v-toolbar-title>
                         
                 </v-app-bar>
-            
+                
                 <v-main>
+                        <v-container>
+                            <v-alert 
+                            :type="result" 
+                            v-for="(message, index) in messages"
+                            :key="index"
+                            @click="messages.splice(index,1)"
+                            dismissible
+                            sm6
+                            >
+                            {{ message }}    
+                            </v-alert>
+                        </v-container>
                         <Produtos   
                         @Re_render="Refresh"
                         :key="prodkey"
                         v-if="group == 0"></Produtos>
 
-                        <Marcas
+                        <Model
+                        :key="prodkey"
+                        :Model="'Marcas'"
+                        :Headers="[
+                            { text: 'Id', value: 'id' },
+                            { text: 'Nome', value: 'name' },
+                            { text: 'Qtd. Associados', value: 'qtdpr' },
+                            { text: 'Ações', value: 'actions', sortable: false }]"
+                        :InputFields="[
+                        {
+                            type:'text',
+                            name:'name',
+                            label:'Nome',
+                            rules:[
+                                value => !!value || 'Obrigatório',
+                            ]
+                        }]"
+                        @SendRequest="Empacotar"
                         v-if="group == 1">
-                        </Marcas>
+                        </Model>
                         
                 </v-main>
             
@@ -122,17 +151,20 @@
 <script>
 
 import { mapGetters } from 'vuex'
+import axios from 'axios'
 import login from './Login.vue';
 import Produtos from '../components/admin/Produtos.vue';
-import Marcas from '../components/admin/Marcas.vue'
+import Model from '../components/admin/Model.vue'
 import NotFound from '../components/NotFound'
+
+axios.defaults.baseURL = 'http://127.0.0.1:8000/api'
 
 export default {
 
     components: {
         login,
         Produtos,
-        Marcas,
+        Model,
         NotFound
     },
 
@@ -146,7 +178,9 @@ export default {
         return {
             drawer: null,
             group:null,
-            prodkey:0
+            prodkey:0,
+            messages:[],
+            result:'success',
         }
     },
 
@@ -167,7 +201,43 @@ export default {
 
         Re_render () {
             this.prodkey ++
-        }
+        },
+
+        Empacotar (FromForm) {
+            var formData = new FormData();
+            var Form = FromForm[0];
+            for (var field in Form) {
+                formData.append(field, Form[field])
+            }
+
+            this.Request(formData, FromForm[1], FromForm[2]);
+        },
+
+        Request (formData, type, Model) {
+
+            axios.post(`/auth${type}`, formData,
+            {
+                headers: {
+                    'Authorization': `Bearer ${this.$store.state.user.access_token}`
+                }
+            })
+            .then(({ data }) => {
+                this.$store.dispatch('Get'+Model);
+                this.messages.push(data.message);
+                this.result = 'success';    
+                this.Refresh();
+            })
+            .catch(({ response }) => {
+                this.$store.dispatch('Get'+Model);
+                this.messages = response.data['message'];
+                this.result = 'error';
+                this.Refresh();
+                // console.log(response.data['message'])
+            })
+
+            
+        },
+
     }
 
 }
