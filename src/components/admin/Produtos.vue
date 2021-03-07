@@ -5,20 +5,6 @@
     id="Produto">
         <v-row
         align="center"
-        justify="center">
-            <v-alert 
-            :type="result" 
-            v-for="(message, index) in messages"
-            :key="index"
-            @click="messages.splice(index,1)"
-            dismissible
-            sm6
-            >
-                {{ message }}    
-            </v-alert>
-        </v-row>
-        <v-row
-        align="center"
         justify="center"
         >
             <v-spacer></v-spacer>
@@ -41,6 +27,7 @@
                 <v-card
                 class="mx-auto"
                 max-width="400"
+                color="teal accent-1"
                 >
                     <v-img
                     class="black--text align-end"
@@ -50,32 +37,48 @@
                         <v-card-title>{{ Produto.name }}</v-card-title>
                     </v-img>
 
-                    <v-card-subtitle class="pb-0">
-                        Preço: {{ Produto.price }}
-                    </v-card-subtitle>
+                    <v-row>
+                        <v-col cols="6">
+                            <v-card-subtitle class="pb-0 black--text font-weight-regular">
+                                Preço: {{ Produto.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}}
+                            </v-card-subtitle>
+                        </v-col>
+                        <v-spacer></v-spacer>
+                        <v-col cols="6">
+                            <v-card-subtitle class="pb-0 black--text font-weight-medium">
+                                Quantidade: {{ Produto.quantidade }}
+                            </v-card-subtitle>
+                        </v-col>
+                    </v-row>
 
-                    <v-card-text class="text--primary">
-                        <p
-                        left>Moeda: {{ Produto.moeda }}$ </p>
-
-                        <p
-                        right>Quantidade: {{ Produto.quantidade }} </p>
+                    <v-card-text>
+                        <v-row>
+                            <v-col
+                            cols="6">
+                                <p class="black--text font-weight-bold"
+                                left> Categoria: {{ Produto.categoria }} </p>
+                            </v-col>
+                            <v-spacer></v-spacer>
+                            <v-col
+                            cols="5">
+                                <p class="black--text font-weight-bold"
+                                right> Marca: {{ Produto.marca }} </p>
+                            </v-col>
+                        </v-row>
                     </v-card-text>
 
                     <v-card-actions
-                    @mouseover="SelProduto = Produto"
+                    @mouseover="SelProduto = Produto.id"
                     >
                         <v-btn
-                        color="orange"
-                        text
+                        color="blue-grey darken-4"
                         @click="dialog2 = true"
                         >
                             Atualizar
                         </v-btn>
-
+                        <v-spacer></v-spacer>
                         <v-btn
-                        color="red"
-                        text
+                        color="deep-orange accent-3"
                         @click="dialog3 = true"
                         >
                             Deletar
@@ -86,33 +89,33 @@
         </v-row>
         
         <!-- Formulario para inserção de Produto -->
-            <UPForm
+            <CreatPro
             v-if="dialog1"
-            :NewProduto="SelProduto"
             :active='dialog1'
-            @SendRequest="Empacotar"
+            @SendRequest="DoRequest"
             @Closethis="ClearDialogs"
-            ></UPForm>
+            ></CreatPro>
         <!-- Fim Formulário para inserção -->
 
         <!-- Formulario para Atualização de Produto -->
-            <UPForm 
+            <UpdPro 
             v-if="dialog2"
-            :NewProduto="SelProduto"
+            :Id="SelProduto"
             :active='dialog2'
-            :type="'/update'"
-            @SendRequest="Empacotar"
+            @SendRequest="DoRequest"
             @Closethis="ClearDialogs"
-            ></UPForm>
+            ></UpdPro>
         <!-- Fim Formulário para atualização -->
 
         <!-- Confirmação de Deleção do Produto -->
-            <DelForm
+            <DelePro
+            v-if="dialog3"
             :active='dialog3'
-            @SendRequest="Empacotar"
-            :OldProduto="SelProduto"
+            :Item="SelProduto"
+            :MainProp="'name'"
+            @SendRequest="DoRequest"
             @Closethis="ClearDialogs"
-            ></DelForm>
+            ></DelePro>
         <!-- Fim Confirmação para deleção -->
     </v-container>
     
@@ -120,8 +123,9 @@
 
 <script>
 
-import UPForm from './Produtos/UPForm' 
-import DelForm from './Produtos/DelForm'
+import CreatPro from './Produtos/CreatPro' 
+import UpdPro from './Produtos/UpdPro' 
+import DelePro from './Models/DelForm'
 import axios from 'axios'
 
 axios.defaults.baseURL = 'http://127.0.0.1:8000/api'
@@ -130,8 +134,9 @@ axios.defaults.baseURL = 'http://127.0.0.1:8000/api'
 export default {
 
     components:{
-        UPForm,
-        DelForm
+        CreatPro,
+        UpdPro,
+        DelePro
     },
 
     data(){
@@ -139,55 +144,31 @@ export default {
             dialog2:false,
             dialog1:false,
             dialog3:false,
-            messages:[],
-            result:'success',
             SelProduto: null,
-            Produtos:this.$store.state.estoque.Produtos,
+            Produtos:this.$store.state.estoque,
         }
     },
 
     methods:{
-
-        Empacotar (FromForm) {        
-            var formData = new FormData();
-            if (FromForm[1] != '/delete') {
-                formData.append('name', FromForm[0].name);
-                formData.append('price', FromForm[0].price);
-                formData.append('quantidade', FromForm[0].quantidade);
-                formData.append('moeda', FromForm[0].moeda);
-                formData.append('image', FromForm[0].image, FromForm[0].image.name);
-            }
-            if (FromForm[1] != '/create') {
-                formData.append('id', FromForm[0].id);
-            }
-  
-            this.Request(formData, FromForm[1]);
-        },
-
-        Request (formData, type) {
-
-            axios.post(`/auth/produtos${type}`, formData,
-            {
-                headers: {
-                    'Authorization': `Bearer ${this.$store.state.user.access_token}`
-                }
-            })
-            .then(({ data }) => {
-                this.messages.push(data.message);
-                this.result = 'success';
-                this.$store.dispatch('GetEstoque');
-                this.$emit('Re_render');
-            })
-            .catch(({ response }) => {
-                console.log(response);
-                this.messages.push(response.data.message);
-                this.result = 'error';
-            })
+        DoRequest (FromForm) {
+            FromForm[1] = '/produtos' + FromForm[1];
+            FromForm.push('Produtos');
+            this.$emit('SendRequest', FromForm)
         },
 
         ClearDialogs () {
             this.dialog1 = this.dialog2 = this.dialog3 = false;
         }
+    },
+
+    created () {
+        this.Produtos.forEach(produto => {
+            produto["categoria"] = this.$store.state.categorias[this.$store.state.categorias.findIndex(e => e.id == produto.categoria_id)].name
+        });
+
+        this.Produtos.forEach(produto => {
+            produto["marca"] = this.$store.state.marcas[this.$store.state.marcas.findIndex(e => e.id == produto.marca_id)].name
+        });
     }
 
 }

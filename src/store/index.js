@@ -13,6 +13,8 @@ export default new Vuex.Store({
     admin: false,
     estoque: [],
     marcas: [],
+    moedas: [],
+    categorias: [],
     cart: JSON.parse(localStorage.getItem('cart')),
   },
 
@@ -28,12 +30,25 @@ export default new Vuex.Store({
       location.reload()
     },
 
-    setEstoque (state, produtos) {
-      state.estoque = produtos;
-      //instanciando um carrinho na memória como um array.
+    setProdutos (state, produtos) {
+      state.estoque = produtos.Produtos;
+      // instanciando carrinho, caso esteja ausente.
       if (!state.cart) {
         localStorage.setItem('cart', JSON.stringify(new Array()))
       }
+    },
+    
+    setMarcas (state, marcas) {
+      state.marcas = marcas.Marcas;
+    },
+
+    setMoedas (state, moedas) {
+      console.log(moedas)
+      state.moedas = moedas.Moedas;
+    },
+    
+    setCategorias (state, categorias) {
+      state.categorias = categorias.Categorias;
     },
 
     addCart (state, produto) {
@@ -47,9 +62,6 @@ export default new Vuex.Store({
       localStorage.setItem('cart', JSON.stringify(state.cart))
     },
 
-    setMarcas (state, marcas) {
-      state.marcas = marcas.Marcas;
-    }
   },
 
   actions: {
@@ -82,22 +94,22 @@ export default new Vuex.Store({
       })
     },
 
-    GetEstoque ({ commit }) {
-      axios.get('/auth/produtos').then(({ data }) =>{
-        commit('setEstoque', data)
+    GetServer ({ commit }, target) {
+      axios.get('/'+ target.toLowerCase()).then(({ data }) =>{
+        commit('set'+ target, data)
       })
+    },
+    
+    Consumo ({ dispatch }) {
+      dispatch('GetServer', 'Marcas');
+      dispatch('GetServer', 'Moedas');
+      dispatch('GetServer', 'Categorias');
+      dispatch('GetServer', 'Produtos');
     },
 
     AddToCart ({ commit }, item) {
       commit('addCart', item)
     },
-
-    GetMarcas ({ commit }) {
-      axios.get('/auth/marcas').then(({ data }) => {
-        commit('setMarcas', data)
-      })
-    }
-
   },
 
   getters : {

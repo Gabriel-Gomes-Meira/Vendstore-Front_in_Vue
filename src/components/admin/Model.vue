@@ -72,9 +72,9 @@
             @SendRequest="DoRequest"
             @Closethis="ClearDialogs"
             ></up-form>
-        <!-- Insert Marca Input - End -->
+        <!-- Insert Cadastro Input - End -->
 
-        <!-- Update Marca Input Start -->
+        <!-- Update Regsitro Input Start -->
             <up-form
             v-if="DialogUp"
             :active="DialogUp"
@@ -85,25 +85,26 @@
             @SendRequest="DoRequest"
             @Closethis="ClearDialogs"
             ></up-form>
-        <!-- Update Marca Input End -->
+        <!-- Update Regsitro Input End -->
 
-        <!-- Delete Marca Dialog Start -->
+        <!-- Delete Regsitro Dialog Start -->
             <del-form
             v-if="DialogDel"
             :active="DialogDel"
             :Item="SelectedItem"
-            :MainProp="'name'"
+            :MainProp="MainProp"
             @SendRequest="DoRequest"
             @Closethis="ClearDialogs"
             ></del-form>
-        <!-- Delete Marca Dialog End -->
+        <!-- Delete Regsitro Dialog End -->
     </v-container>
 
 </template>
 
 <script>
-import UpForm from './Tables/UpForm.vue'
-import DelForm from './Tables/DelForm.vue'
+import UpForm from './Models/UpForm.vue'
+import DelForm from './Models/DelForm.vue'
+import Models from './Models/Models.js'
 
 
 export default {
@@ -114,8 +115,7 @@ export default {
 
     props:{
         Model:String,
-        Headers:null,
-        InputFields:Array,
+        Data:null,
     },
 
     data () {
@@ -124,13 +124,19 @@ export default {
             DialogUp:false,
             DialogDel:false,
             SwitchSearch: false,
-            Data:this.$store.state.marcas,
             search:'',
             SelectedItem:null,
-            Cadastro:{
-                name:''
-            }
+            InputFields:Models[this.Model].InputFields,
+            Headers:Models[this.Model].Headers,
+            MainProp:Models[this.Model].MainProp,
+            Cadastro:{},
         }
+    },
+
+    created () {
+        this.InputFields.forEach(element => {
+            this.Cadastro[element.name] = null
+        });
     },
 
     methods: {

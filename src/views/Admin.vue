@@ -93,31 +93,27 @@
                             {{ message }}    
                             </v-alert>
                         </v-container>
-                        <Produtos   
-                        @Re_render="Refresh"
-                        :key="prodkey"
-                        v-if="group == 0"></Produtos>
-
-                        <Model
-                        :key="prodkey"
-                        :Model="'Marcas'"
-                        :Headers="[
-                            { text: 'Id', value: 'id' },
-                            { text: 'Nome', value: 'name' },
-                            { text: 'Qtd. Associados', value: 'qtdpr' },
-                            { text: 'Ações', value: 'actions', sortable: false }]"
-                        :InputFields="[
-                        {
-                            type:'text',
-                            name:'name',
-                            label:'Nome',
-                            rules:[
-                                value => !!value || 'Obrigatório',
-                            ]
-                        }]"
+                        
+                        <Produtos :key="prodkey"
                         @SendRequest="Empacotar"
-                        v-if="group == 1">
+                        v-show="group == 0"></Produtos>
+
+                        <Model :key="prodkey" :Model="'Marcas'"
+                        :Data="this.$store.state.marcas"
+                        @SendRequest="Empacotar"
+                        v-show="group == 1">
                         </Model>
+
+                        <Model :key="prodkey" :Model="'Moedas'"
+                        :Data="this.$store.state.moedas"
+                        @SendRequest="Empacotar"
+                        v-show="group == 2"></Model>
+                        
+                        <Model :key="prodkey" :Model="'Categorias'"
+                        :Data="this.$store.state.categorias"
+                        @SendRequest="Empacotar"
+                        v-show="group == 3"
+                        ></Model>
                         
                 </v-main>
             
@@ -156,6 +152,7 @@ import login from './Login.vue';
 import Produtos from '../components/admin/Produtos.vue';
 import Model from '../components/admin/Model.vue'
 import NotFound from '../components/NotFound'
+
 
 axios.defaults.baseURL = 'http://127.0.0.1:8000/api'
 
@@ -215,34 +212,30 @@ export default {
 
         Request (formData, type, Model) {
 
-            axios.post(`/auth${type}`, formData,
+            axios.post(`${type}`, formData,
             {
                 headers: {
                     'Authorization': `Bearer ${this.$store.state.user.access_token}`
                 }
             })
             .then(({ data }) => {
-                this.$store.dispatch('Get'+Model);
+                this.$store.dispatch('GetServer', Model);
                 this.messages.push(data.message);
                 this.result = 'success';    
                 this.Refresh();
             })
             .catch(({ response }) => {
-                this.$store.dispatch('Get'+Model);
-                this.messages = response.data['message'];
+                this.$store.dispatch('GetServer', Model);
+                this.messages.push(response.data.message);
                 this.result = 'error';
                 this.Refresh();
-                // console.log(response.data['message'])
             })
 
             
         },
-
+        
     }
 
 }
 </script>
 
-<style>
-
-</style>

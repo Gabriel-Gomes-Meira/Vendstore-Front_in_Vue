@@ -52,8 +52,6 @@ export default {
         
         Checkfields() {
             if ( this.$refs.form.validate() ) {
-                console.log(this.Item);
-                console.log(this.Type);
                 this.$emit('SendRequest', [this.Item,this.Type] );
                 this.Sumir();
             }
