@@ -86,7 +86,6 @@
                             :type="result" 
                             v-for="(message, index) in messages"
                             :key="index"
-                            @click="messages.splice(index,1)"
                             dismissible
                             sm6
                             >

@@ -21,8 +21,6 @@
                                         <v-flex sm12>
                                             <v-text-field label="Nome"
                                             :rules="[rules.required]"
-                                            readonly
-                                            disabled
                                             v-model="Item.name" 
                                             ></v-text-field>
                                         </v-flex>

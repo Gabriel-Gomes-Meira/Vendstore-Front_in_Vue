@@ -15,15 +15,17 @@
                         <v-container grid-list-md>
                             <v-form
                             ref="form"
-                            lazy-validation>
-                                <v-layout wrap>
+                            lazy-validation
+                            :key="upkey">
+                                <v-layout 
+                                wrap >
 
                                         <v-flex
-                                        sm12 class="d-flex align-center">
-                                            
+                                        sm12 class="d-flex align-center">                                 
                                             <v-btn
                                             color="purple"
-                                            icon outlined>
+                                            icon outlined
+                                            @click="ChangeEnable(0)">
                                                 <v-icon v-if="!isEditing[0]">mdi-pencil</v-icon>
                                                 <v-icon v-else>mdi-close</v-icon>
                                             </v-btn>
@@ -35,30 +37,74 @@
                                             ></v-text-field>
                                             
                                             <v-text-field label="Nome"
-                                            v-else
+                                            v-else class="ml-2"
                                             :rules="[rules.required]"
                                             v-model="Item.name"
                                             ></v-text-field>
-                                            
                                         </v-flex>
 
-                                        <v-flex sm6>
+                                        <v-flex sm6
+                                        class="d-flex align-center">
+                                            <v-btn
+                                            color="purple"
+                                            icon outlined
+                                            @click="ChangeEnable(1)">
+                                                <v-icon v-if="!isEditing[1]">mdi-pencil</v-icon>
+                                                <v-icon v-else>mdi-close</v-icon>
+                                            </v-btn>
+
+                                            <v-text-field label="Preço"
+                                            class="ml-2"
+                                            v-if="!isEditing[1]"
+                                            disabled
+                                            ></v-text-field>
+
                                             <v-text-field label="Preço" 
+                                            v-else class="ml-2"
                                             :rules="[rules.required, rules.notlezero]"
                                             v-model="Item.price" 
                                             type="number"
                                             ></v-text-field>
                                         </v-flex>
 
-                                        <v-flex sm6>
+                                        <v-flex sm6
+                                        class="d-flex align-center">
+                                            <v-btn
+                                            color="purple"
+                                            icon outlined
+                                            @click="ChangeEnable(2)">
+                                                <v-icon v-if="!isEditing[2]">mdi-pencil</v-icon>
+                                                <v-icon v-else>mdi-close</v-icon>
+                                            </v-btn>
+
+                                            <v-text-field label="Quantidade"
+                                            v-if="!isEditing[2]" class="ml-2" 
+                                            readonly disabled></v-text-field>
+
                                             <v-text-field label="Quantidade" 
+                                            v-else class="ml-2"
                                             :rules="[rules.required, rules.notlzero]"
                                             v-model="Item.quantidade" 
                                             type="number"></v-text-field>
                                         </v-flex>
 
-                                        <v-flex sm6>
+                                        <v-flex sm6
+                                        class="d-flex align-center">
+                                            <v-btn
+                                            color="purple"
+                                            icon outlined
+                                            @click="ChangeEnable(3)">
+                                                <v-icon v-if="!isEditing[3]">mdi-pencil</v-icon>
+                                                <v-icon v-else>mdi-close</v-icon>
+                                            </v-btn>
+
                                             <v-select light
+                                            v-if="!isEditing[3]" class="ml-2"
+                                            disabled readonly
+                                            label="Categoria"></v-select>
+
+                                            <v-select light
+                                            v-else class="ml-2"
                                             :items="this.$store.state.categorias"
                                             item-text="name"
                                             item-value="id"
@@ -67,8 +113,23 @@
                                             label="Categoria"></v-select>
                                         </v-flex>
 
-                                        <v-flex sm6>
-                                            <v-select light
+                                        <v-flex sm6
+                                        class="d-flex align-center">
+                                            <v-btn
+                                            color="purple"
+                                            icon outlined
+                                            @click="ChangeEnable(4)">
+                                                <v-icon v-if="!isEditing[4]">mdi-pencil</v-icon>
+                                                <v-icon v-else>mdi-close</v-icon>
+                                            </v-btn>
+
+                                            <v-select
+                                            disabled readonly
+                                            v-if="!isEditing[4]" class="ml-2"
+                                            label="Marca"></v-select>
+
+                                            <v-select
+                                            v-else class="ml-2"
                                             :items="this.$store.state.marcas"
                                             item-text="name"
                                             item-value="id"
@@ -77,10 +138,25 @@
                                             label="Marca"></v-select>
                                         </v-flex>
 
-                                        <v-flex sm12>
+                                        <v-flex sm12
+                                        class="d-flex align-center">
+                                            <v-btn
+                                            color="purple"
+                                            icon outlined
+                                            @click="ChangeEnable(5)">
+                                                <v-icon v-if="!isEditing[5]">mdi-pencil</v-icon>
+                                                <v-icon v-else>mdi-close</v-icon>
+                                            </v-btn>
+
                                             <v-file-input label="Imagem"
+                                            readonly disabled
+                                            v-if="!isEditing[5]" class="ml-2"
+                                            prepend-icon="mdi-camera"
+                                            ></v-file-input>
+
+                                            <v-file-input label="Imagem"
+                                            v-else class="ml-2"
                                             :rules="[rules.required]"
-                                            truncate-length="15" 
                                             accept="image/*"
                                             prepend-icon="mdi-camera"
                                             v-model="Item.image"
@@ -114,6 +190,7 @@ export default {
 
     data () {
         return {
+            upkey:0,
             isEditing:[],
             Item: {},
             rules:{
@@ -127,6 +204,7 @@ export default {
     methods:{
         Checkfields() {
             if ( this.$refs.form.validate() ) {
+                this.Item.id = this.Id;
                 this.$emit('SendRequest', [this.Item,'/update'] );
                 this.Sumir();
             }
@@ -134,6 +212,11 @@ export default {
 
         Sumir () {
             this.$emit('Closethis')
+        },
+
+        ChangeEnable (index) {
+            this.upkey++;
+            this.isEditing[index] = !this.isEditing[index];
         }
     }
 }
