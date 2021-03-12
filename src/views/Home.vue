@@ -1,11 +1,10 @@
 <template>
   
-  <v-container grid-list-xs
-  fluid
+  <v-container 
   fill-height
   >
+
     <v-row
-    mt-10
     align="center"
     justify="center"
     color="amber lighten-4">
@@ -22,10 +21,15 @@
     align="center"
     justify="center"
     id="Catalogo">
-        <Catalogo 
-        v-for="(Produto, index) in Produtos"
-        :key="index" 
+      <v-col
+      v-for="(Produto, index) in Produtos"
+      :key="index" 
+      sm="6"
+      md="4"
+      lg="3">
+        <Catalogo
         :Produto="Produto"></Catalogo>
+      </v-col>
     </v-row>
   </v-container>
   
@@ -54,7 +58,7 @@ export default {
 
   methods:{
     GetAllProdutos () {
-      this.Produtos = this.$store.state.estoque.Produtos
+      this.Produtos = this.$store.state.estoque
     }
   }
 

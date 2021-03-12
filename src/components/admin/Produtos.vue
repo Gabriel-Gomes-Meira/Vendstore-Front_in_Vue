@@ -216,7 +216,7 @@ export default {
             dialog1:false,
             dialog3:false,
             SelProduto: null,
-            Produtos:[],
+            Produtos:this.$store.state.estoque,
             Search:'',
         }
     },
@@ -232,22 +232,10 @@ export default {
             this.dialog1 = this.dialog2 = this.dialog3 = false;
         },
 
-        Enlace () {
-            this.Produtos = this.$store.state.estoque;
-            this.Produtos.forEach(produto => {
-            produto["categoria"] = this.$store.state.categorias[this.$store.state.categorias.findIndex(e => e.id == produto.categoria_id)].name
-            });
-
-            this.Produtos.forEach(produto => {
-                produto["marca"] = this.$store.state.marcas[this.$store.state.marcas.findIndex(e => e.id == produto.marca_id)].name
-            });
-        }
     },
 
-
-
     created () {
-        this.Enlace();
+        this.$store.dispatch("Enlace");
     }
 
 }

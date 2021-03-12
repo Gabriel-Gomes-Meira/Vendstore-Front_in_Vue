@@ -1,8 +1,8 @@
 <template>
 
     <v-card
-        class="mx-auto my-12"
-        max-width="270"
+    class="mx-auto my-12"
+    max-width="270"
     >
 
         <v-img
@@ -38,8 +38,7 @@
                 </v-col>
                 <v-text-field
                 disabled
-                :value="Produto.price "
-                :suffix="Produto.moeda+'$'"
+                :value="Produto.price"
                 ></v-text-field>
                     
             </v-row>

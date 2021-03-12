@@ -107,6 +107,25 @@ export default new Vuex.Store({
       dispatch('GetServer', 'Produtos');
     },
 
+    Enlace ({}){
+      this.state.categorias.forEach( element => {
+        element["qtdpr"] = 0;
+      });
+      this.state.marcas.forEach( element => {
+        element["qtdpr"] = 0;
+      });
+
+      this.state.estoque.forEach( produto => {
+        produto["categoria"] = this.state.categorias[this.state.categorias.findIndex(e => e.id == produto.categoria_id)].name;
+        this.state.categorias[this.state.categorias.findIndex(e => e.id == produto.categoria_id)].qtdpr++;
+      });
+
+      this.state.estoque.forEach( produto => {
+        produto["marca"] = this.state.marcas[this.state.marcas.findIndex(e => e.id == produto.marca_id)].name;
+        this.state.marcas[this.state.marcas.findIndex(e => e.id == produto.marca_id)].qtdpr++;
+      });
+    },
+
     AddToCart ({ commit }, item) {
       commit('addCart', item)
     },
