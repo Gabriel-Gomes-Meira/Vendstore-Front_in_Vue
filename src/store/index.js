@@ -42,8 +42,7 @@ export default new Vuex.Store({
       state.marcas = marcas.Marcas;
     },
 
-    setMoedas (state, moedas) {
-      console.log(moedas)
+    setMoedas (state, moedas) {      
       state.moedas = moedas.Moedas;
     },
     
@@ -87,11 +86,12 @@ export default new Vuex.Store({
           'Authorization': `Bearer ${this.state.user.access_token}`
         }
       })
-      .then(({ data }) => {
-        if(data.response == 1) {
-          this.state.admin = true;
+      .then(({ data }) => {        
+        if(data.response == 1) {              
+          this.state.admin = true;             
         }
       })
+      
     },
 
     GetServer ({ commit }, target) {

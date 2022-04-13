@@ -1,6 +1,5 @@
 <template>
     <div>
-        ss
         <v-form v-model="valid">
     <v-container>
       <v-row>

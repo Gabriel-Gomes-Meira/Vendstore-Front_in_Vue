@@ -2,27 +2,29 @@
   <v-app
   id="TheApp">
     
+    
     <BarraApp
     @Router="To"
+    @ChangeView="AlterHome"
     @CallDrawer="drawer = !drawer"
-    :drawer="drawer">
+    :drawer="drawer"
+    v-if="$router.currentRoute.name!='Admin'">
     </BarraApp>
 
     <v-navigation-drawer
-      v-model="drawer"
-      absolute
-      temporary
+    v-model="drawer"
+    absolute
+    temporary
+    v-if="$router.currentRoute.name!='Admin'"
     >
       <v-list
-      nav
-      dense
+      nav dense
       >
         <v-list-item-group
-          active-class="amber--text text--accent-4"
-          
+        active-class="amber--text text--accent-4"
         >
           <v-list-item
-          @click="To('Home')">
+          @click="To('Produtos')">
             <v-list-item-icon>
               <v-icon>mdi-home</v-icon>
             </v-list-item-icon>
@@ -32,8 +34,7 @@
       </v-list>
 
       <v-list v-if="!isLogged"
-        nav
-        dense
+      nav dense
       >
         <v-list-item-group
           active-class="amber--text text--accent-4"
@@ -83,8 +84,9 @@
       </v-list>
     </v-navigation-drawer>
 
-    
-      <router-view/>
+  
+  <router-view/>
+      
 
     
   </v-app>
@@ -96,28 +98,70 @@ import BarraApp from './components/Home/BarraApp.vue'
 
 export default {
   name: 'App',
+
   components:{
     BarraApp
   },
+
   computed: {
     ...mapGetters([
-      'isLogged',
+      'isLogged'  
   ])},
+
   data: () => ({
-    drawer:false,
+    drawer:false
   }),
+
   methods:{
+    
     To(path){
-      this.$router.push({ name: path })
+      this.$router.push({ name: path }).catch(()=>{})
+    },
+
+    AlterHome (View) {
+      this.To(View)
     }
   },
+
   created() {
-    this.$store.dispatch('Consumo');
-  }
+    this.$store.dispatch('Consumo'); 
+    this.$store.dispatch('superauth')   
+  },
 
 
-};
+}
 </script>
 
 
+<style>
+    .v-progress-circular {
+      margin: 1rem;
+    }
 
+  html{
+    overflow-y: hidden;
+  }
+
+  #TheApp{
+    background-color: #FFFDE7;
+  }
+
+  .withScrollBar{
+      overflow-y: auto;      
+  }
+  .withScrollBar::-webkit-scrollbar{
+      
+      width: 8px;
+  }
+  .withScrollBar::-webkit-scrollbar-track{
+      /* margin-top: 50px; */
+      background-color: #3b3b3c8c;
+      border-radius: 4px;
+  }
+  .withScrollBar::-webkit-scrollbar-thumb{
+      background: #91919435;
+      border: solid #74758400;
+      border-radius: 4px;
+  }
+  
+</style>
